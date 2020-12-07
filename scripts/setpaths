@@ -1,0 +1,42 @@
+#! /bin/bash
+
+# Setting all neccessary path
+# General settings
+export WORKSPACE=/scratch/sfalk
+export DATA=$WORKSPACE/Data
+export PY_SCRIPTS=$HOME/privat/python_scripts
+export PYTHONPATH=$PYTHONPATH:$PY_SCRIPTS
+
+# Include Panoply
+alias panoply=${WORKSPACE}/software/PanoplyJ/panoply.sh
+# Include conda
+if ! echo "$PATH" | /bin/grep -Eq "(^|:)$1($|:)" ; then
+    export PATH=$PATH:${WORKSPACE}/miniconda3/bin
+fi
+
+echo "Setting work environment..."
+
+set_up() {
+    # Activate conda environment for cesm/ctsm
+    source $WORKSPACE/miniconda3/bin/activate mycesm
+    target=${1}
+    case ${target} in
+        CESM)
+            export CESM_ROOT=${WORKSPACE}/miniconda3/envs/mycesm/
+            ;;
+        CTSM)
+            export CESM_ROOT=${WORKSPACE}/software/ctsm
+            ;;
+        CTSMOL)
+            export CESM_ROOT=${WORKSPACE}/software/ctsm_ozone_luna
+            ;;
+        *)
+            echo "No valid option!"
+            echo "Options: CESM, CTSM, CTSMOL"
+    esac
+
+    export CESM_RUN=${WORKSPACE}/cesm
+    export CTSM_INPUT=$CESM_RUN/inputdata
+    export CTSM_USR_INPUT=$CESM_RUN/usr_input
+    export CTSM_ROOT=$CESM_ROOT
+}
