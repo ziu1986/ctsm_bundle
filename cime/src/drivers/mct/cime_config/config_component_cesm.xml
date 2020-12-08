@@ -510,7 +510,7 @@
     </desc>
   </entry>
 
-<entry id="CCSM_O3_PPMV">
+<entry id="CCSM_O3_PPBV">
     <type>real</type>
     <valid_values></valid_values>
     <default_value>100.0</default_value>
@@ -520,7 +520,7 @@
     <group>run_o3</group>
     <file>env_run.xml</file>
     <desc>
-      Mechanism for setting the O3 value in ppmv for
+      Mechanism for setting the O3 value in ppbv for
       CLM if CLM_O3_TYPE is constant
     </desc>
   </entry>
