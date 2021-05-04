@@ -94,7 +94,7 @@ set_namelist () {
     #./xmlchange REST_N=1
     # Setting wall clock time
     #./xmlchange --subgroup case.st_archive JOB_WALLCLOCK_TIME=36:00:00
-    /xmlchange JOB_WALLCLOCK_TIME=36:00:00
+    ./xmlchange JOB_WALLCLOCK_TIME=36:00:00
     ./case.setup
     ./preview_namelists
 
