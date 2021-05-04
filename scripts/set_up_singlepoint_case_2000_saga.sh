@@ -87,15 +87,14 @@ set_namelist () {
     # Number of years for spin-up 
     # STOP_N=400 =>1 week CPU time
     # Test shows that for this set-up only STOP_N=100 is needed!
-    #./xmlchange STOP_N=100
-    ./xmlchange STOP_N=5
+    ./xmlchange STOP_N=100
+    #./xmlchange STOP_N=5
     # Frequency of restart files (1/4 of STOP_N)
-    #./xmlchange REST_N=25
-    ./xmlchange REST_N=1
+    ./xmlchange REST_N=25
+    #./xmlchange REST_N=1
     # Setting wall clock time
-    ./xmlchange --subgroup case.st_archive JOB_WALLCLOCK_TIME=01:00:00
-
-
+    #./xmlchange --subgroup case.st_archive JOB_WALLCLOCK_TIME=36:00:00
+    /xmlchange JOB_WALLCLOCK_TIME=36:00:00
     ./case.setup
     ./preview_namelists
 
