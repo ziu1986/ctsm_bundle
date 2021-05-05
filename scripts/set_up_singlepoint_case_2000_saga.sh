@@ -4,7 +4,7 @@
 # create case brazil
 #$CTSM_ROOT/cime/scripts/create_newcase --case ./test_sunnivin_ozone_lombardozzi_brazil --res 1x1_brazil --compset 2000_DATM%GSWP3v1_CLM50%BGC_SICE_SOCN_SROF_SGLC_SWAV --machine saga --run-unsupported
 
-usage() { echo "./set_up_singlepoint_case_2000.sh [--ozone | --ozone_luna] [--o3_conc=100] [--hydrstress=False] [--postad --restartfile | --production --restartfile] <case directory> "; exit 1; }
+usage() { echo "./set_up_singlepoint_case_2000.sh [--ozone | --ozone_luna] [--o3_conc=100] [--hydrstress=False] [--postad --restartfile | --production --restartfile] <case directory> "; "restartfile: in archive/rest/<newest date>/*clm2.r*.nc "; exit 1; }
 
 check_null()
 {
@@ -134,7 +134,9 @@ set_namelist_postad () {
     ./xmlchange STOP_N=100
     # Frequency of restart files (1/4 of STOP_N)
     ./xmlchange REST_N=25
-
+    # Setting wall clock time
+    #./xmlchange --subgroup case.st_archive JOB_WALLCLOCK_TIME=36:00:00
+    ./xmlchange JOB_WALLCLOCK_TIME=36:00:00
     ./case.setup
 
     # Point to restart file (IMPORTANT: Do not forget the single-quotationmarks '<path to restart file>')
@@ -168,7 +170,9 @@ set_namelist_production () {
     ./xmlchange STOP_N=10
     # Frequency of restart files (1/4 of STOP_N)
     ./xmlchange REST_N=2
-
+    # Setting wall clock time
+    #./xmlchange --subgroup case.st_archive JOB_WALLCLOCK_TIME=36:00:00
+    ./xmlchange JOB_WALLCLOCK_TIME=01:20:00
     ./case.setup
     ./preview_namelists
 
