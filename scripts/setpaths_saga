@@ -1,0 +1,116 @@
+#! /bin/bash
+#+++
+# Functions
+#+++
+function ctsm_setup() {
+    version=${1}
+    case ${version} in
+        "module")
+            export CTSM_ROOT=${WORKSPACE}/ctsm/
+            ;;
+        "emerald")
+            export CTSM_ROOT=${WORKSPACE}/ctsm_emerald/
+            ;;
+        "sunnivin")
+            export CTSM_ROOT=${WORKSPACE}/ctsm_sunnivin/
+            ;;
+    esac
+    # No need to load any modules when using fates-api
+    #module load Python/2.7.15-intel-2018b
+    #module load netCDF-Fortran/4.4.4-intel-2018b
+    export CESM_ACCOUNT=$PROJECT
+    export CESM_DATA=/cluster/shared/noresm
+
+    export CTSM_INPUT=${WORK}/inputdata
+    export CTSM_USR_INPUT=$STORAGE/input_data/CTSM/myregionaldata
+    #export NETCDF_ROOT=$EBROOTNETCDFMINFORTRAN
+    if [ ! -d ${CTSM_ROOT}/cime ]; then
+        #cd $CTSM_ROOT
+        echo "CIME not found run:"
+        echo "./manage_externals/checkout_externals"
+    fi
+    #if [ ! -d ${CTSM_INPUT} ]; then
+    #    mkdir ${CTSM_INPUT}
+    #    cd ${CTSM_ROOT}/cime/scripts/
+    #    ./link_dirtree $CESM_DATA $CTSM_INPUT
+    #fi
+    #export INC_NETCDF=$NETCDF_ROOT/inc
+    #export LIB_NETCDF=$NETCDF_ROOT/lib
+}
+
+
+# Load modules and setup for specific software
+set_up() {
+  module purge
+  # Compactibility with fortran compiler!
+  #module load git/2.18.0-GCCcore-7.3.0
+  target=${1}
+  mode=${2}
+  case ${target} in
+      OsloCTM3git)
+          echo "Settings for OsloCTM3git"
+          module load netCDF-Fortran/4.4.4-intel-2018b
+          # Export CICERO directory
+          export CICERO=/cluster/projects/nn9188k/OsloCTM3
+          export CTM3_INPUT=${CICERO}/Indata_CTM3
+          export CTM3_USR_INPUT=${STORAGE}/input_data/OsloCTM3/
+          export CTM3_ROOT=${WORKSPACE}/OsloCTM3
+          export NETCDF_ROOT=$EBROOTNETCDFMINFORTRAN
+          ;;
+      
+      CTSM)
+          module purge
+          echo "Settings for CTSM module"
+          ctsm_setup "${mode}"
+          ;;
+      
+      EMEP)
+          echo "Settings for EMEP-CTM"
+          module load netCDF-Fortran/4.4.4-intel-2018b
+          export EMEP_ROOT=${WORKSPACE}/emep-ctm/source
+          export EMEP_INPUT=${WORK}/emep_inputdata
+          export NETCDF_ROOT=$EBROOTNETCDFMINFORTRAN
+          ;;
+      *)
+          echo "No valid option."
+          echo "Options: OsloCTM3git, OsloCTM3dnas, CTSM [module,emerald], EMEP"
+  esac
+  module list
+}
+
+# Mounting of network resources
+src_data() {
+    target=${1}
+    case $target in
+        nird)
+            echo "Mounting /tos-project1/NS2806K/sfalk/"
+            export NIRD=${STORAGE}/nird
+            sshfs sfalk@login.nird.sigma2.no:/tos-project1/NS2806K/sfalk/ ${NIRD}
+            ;;
+        astra)
+            echo "Mounting ${ASTRA_UIO}"
+            export ASTRA=${STORAGE}/astra
+            sshfs sfalk@abel.uio.no:${ASTRA_UIO} ${ASTRA}
+            ;;
+        *)
+            echo "No valid mount point!"
+            echo "Options: nird"
+    esac
+}
+
+# Main
+
+echo "To set work environment do set_up <opt>"
+# Export the current project number
+export PROJECT=nn2806k
+# Export the project storage space
+export STORAGE=/cluster/projects/${PROJECT}/${USER}
+# alias for squeue
+alias squeue='squeue -lA ${PROJECT}'
+# Export the work directory
+export WORK=/cluster/work/users/${USER}
+# Export location of model code
+export WORKSPACE=${HOME}/models
+# Export datastorage on abel
+export ASTRA_UIO=/projects/researchers/researchers01/${USER}
+
